@@ -1,0 +1,7 @@
+/build
+/dist
+/python_TournamentCode.egg-info
+/TournamentCode/.idea
+
+/upload.bat
+/upload_home.bat
