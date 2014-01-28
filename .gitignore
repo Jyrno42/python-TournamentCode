@@ -5,3 +5,5 @@
 
 /upload.bat
 /upload_home.bat
+
+*.pyc
