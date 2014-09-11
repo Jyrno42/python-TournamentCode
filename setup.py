@@ -9,7 +9,7 @@ def read(file_name):
 
 setup(
     name="python-TournamentCode",
-    version="0.0.1",
+    version="1.1.0",
     author="Jyrno Ader",
     author_email="jyrno42@gmail.com",
     description="LoL TournamentCode generation helper libary, can be easily used to set up different tournaments.",

@@ -1,5 +1,13 @@
 import json
 import base64
+import sys
+
+
+PY3 = sys.version_info[0] == 3
+if PY3:
+    string_types = str,
+else:
+    string_types = basestring,
 
 
 class TournamentCodeException(Exception):
@@ -11,13 +19,40 @@ class GameConfig(object):
         self.name = name
         self.password = password
         self.report_url = report_url
+        self.extra_data = None
 
-        if isinstance(extra_data, dict):
-            self.extra_data = extra_data
+        self.set_extra_data(extra_data)
+
+    def set_extra_data(self, value):
+        if isinstance(value, dict):
+            self.extra_data = value
         else:
             self.extra_data = {
-                'game': extra_data or 1,
+                'game': value or 1,
             }
+
+    def set_config_value(self, attr_key, value):
+        allowed_attrs = ['name', 'password', 'report_url', 'extra_data']
+
+        if attr_key not in allowed_attrs:
+            raise TournamentCodeException('Invalid attr "%s" for GameConfig, valid values are %s.' % attr_key, ", ".join(allowed_attrs))
+
+        if attr_key in ['name', 'report_url'] and (attr_key is None or not isinstance(value, string_types)):
+            raise TournamentCodeException('GameConfig Invalid value for attr "%s".' % attr_key)
+
+        if attr_key == 'name' and len(value) < 5:
+            raise TournamentCodeException('Game name must at least 5 characters')
+
+        if attr_key == 'password' and (value is not None and 0 < len(value) < 4):
+            raise TournamentCodeException('Game password must be empty or at least 4 characters')
+
+        if attr_key == 'extra_data' and not isinstance(value, string_types):
+            raise TournamentCodeException('When using interactive configuration, extra data must be a string.')
+
+        if attr_key == 'extra_data':
+            self.set_extra_data(value)
+        else:
+            setattr(self, attr_key, value)
 
     def serialize(self):
         return base64.b64encode(json.dumps({

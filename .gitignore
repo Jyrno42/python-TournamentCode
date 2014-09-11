@@ -7,3 +7,5 @@
 /upload_home.bat
 
 *.pyc
+venv
+.idea
